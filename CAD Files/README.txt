@@ -1,0 +1,1 @@
+Chasis 1/10 Adaptable - DKS-Basic by dukedoks on Thingiverse: https://www.thingiverse.com/thing:4892947
