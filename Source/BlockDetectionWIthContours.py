@@ -213,6 +213,6 @@ def detect_largest_contour():
     cv2.destroyAllWindows()
 
 # Call the function to detect the largest contour from the video feed
-detect_largest_contour()
+# detect_largest_contour()
 # Call the function to detect contours from the video feed
 detect_all_contours()
