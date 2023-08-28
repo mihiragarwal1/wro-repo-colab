@@ -202,7 +202,7 @@ def detect_largest_contour():
                 cv2.line(frame, (center_x, 0), (center_x, frame.shape[0]), line_color, 1)
 
             # Display the frame with detected contours
-            cv2.imshow("Largest Contours", frame)
+            cv2.imshow("Largest Contours", frame) 
 
         # Introduce a delay between frames (10 milliseconds)
         if cv2.waitKey(10) & 0xFF == ord('q'):
