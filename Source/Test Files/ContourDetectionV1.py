@@ -85,7 +85,7 @@ while True:
             x, y, w, h = cv2.boundingRect(c)
 
             # Calculate the distance using the width of the bounding box
-            distance = calculate_distance(known_width, focal_length, w)
+            distance = calculate_distance(7, 0.8, w)
 
             if distance < closest_distance:  # Update the closest contour
                 closest_distance = distance
