@@ -1,0 +1,48 @@
+body {
+    overflow: hidden;
+}
+div {
+    font-family: sans-serif;
+}
+
+.largeButton {
+    width: 268px;
+    height: 32px;
+    margin: 16px 16px;
+    left: 1000px;
+    margin-bottom: 0px;
+    font: 12px sans-serif;
+    font-weight: bolder;
+    background-color:orange ;
+    border: 4px outset red;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.largeButton:active {
+    border-style: inset;
+}
+
+
+#randomiseWithoutPillars {
+    position: absolute;
+    top: 16px;
+    left: 0px;
+}
+#randomiseWithPillars {
+    position: absolute;
+    top: 60px;
+    left: 0px;
+}
+#reset {
+    position: absolute;
+    top: 106px;
+    left: 0px;
+}
+
+#canvas {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+}

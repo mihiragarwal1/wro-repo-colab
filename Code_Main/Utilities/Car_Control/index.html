@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control</title>
+    <link rel="stylesheet" href="./style.css">
+    <script src="./socket.io.min.js"></script>
+    <script src="./index.js" defer></script>
+    <script src="./display.js" defer></script>
+    <script src="/common/sound.js" defer></script>
+</head>
+<body>
+    <div id="leftPane">
+        <div id="logButtonsCollapsible">
+            <div id="buttonsContainer">
+                <input type="checkbox" id="slideoutTabCheckbox"> <!-- dumb CS​S thing -->
+                <div id="slideout">
+                    <div id="slideoutBody">
+                        <div id="buttons">
+                            <div id="streamButtonContainer">
+                                <button id="stream" class="largeButton">START STREAM</button>
+                                <input type="checkbox" id="streamToggle">
+                                <div class="generateToggle" toggleID="streamModSave" toggleLabel="Save:"></div>
+                                <div class="generateToggle" toggleID="streamModFilter" toggleLabel="Filter:"></div>
+                            </div>
+                            <div id="captureButtonContainer">
+                                <button id="capture" class="largeButton">CAPTURE</button>
+                                <div class="generateToggle" toggleID="captureModSave" toggleLabel="Save:"></div>
+                                <div class="generateToggle" toggleID="captureModFilter" toggleLabel="Filter:"></div>
+                            </div>
+                            <div id="predictButtonContainer">
+                                <button id="predict" class="largeButton">START PREDICTIONS</button>
+                                <input type="checkbox" id="predictToggle">
+                                <button id="resetPredictor" class="largeButton">RESET</button>
+                            </div>
+                            <div class="divider"></div>
+                            <div id="mapControls">
+                                <div class="generateToggle" toggleID="hcDrawOverlays" toggleLabel="Overlays:"></div>
+                                <div class="generateToggle" toggleID="hcDrawRaw" toggleLabel="Raw Landmarks:"></div>
+                                <div class="generateToggle" toggleID="hcDrawDistances" toggleLabel="Walls & Distances:"></div>
+                                <div class="generateToggle" toggleID="hcDrawWaypoints" toggleLabel="Waypoints:"></div>
+                                <div class="generateToggle" toggleID="hcRawDump" toggleLabel="Raw Dump:"></div>
+                            </div>
+                            <div class="divider"></div>
+                            <div id="sessionFileControls">
+                                <button id="downloadFrame" class="largeButton"></button>
+                                <button id="importSession" class="largeButton"></button>
+                                <button id="exportSession" class="largeButton"></button>
+                            </div>
+                        </div>
+                    </div>
+                    <label id="slideoutTab" for="slideoutTabCheckbox"></label>
+                </div>
+            </div>
+            <div id="log"></div>
+        </div>
+        <div id="display">
+            <div id="display0">
+                <img id="display0Img">
+                <canvas id="display0Overlay"></canvas>
+            </div>
+            <div id="display1">
+                <img id="display1Img">
+                <canvas id="display1Overlay"></canvas>
+            </div>
+            <div id="fps">FPS: 0</div>
+        </div>
+        <div id="historyControlsWrapper">
+            <div id="historyControls">
+                <div id="historyControlsBody">
+                    <button id="historyPrevious">&#60;</button>
+                    <input type="range" id="historySlider" class="slider" min="1" max="1" step="1">
+                    <button id="historyNext">&#62;</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="rightPane">
+        <canvas id="map"></canvas>
+        <div id="rawDumpContainer">
+            <div id="rawDumpTitle">Raw</div>
+            <div id="rawDumpContents"></div>
+        </div>
+        <input type="checkbox" id="dropdownTabCheckbox">
+        <div id="dropdown">
+            <div id="filterAdjust">
+                <div id="filterAdjustLabels">
+                    <span>Red HSV</span>
+                    <span style="transform: translateX(8px)">Green HSV</span>
+                </div>
+                <div id="filterAdjustSliders"></div>
+                <div id="filterAdjustIndicators"></div>
+                <button id="filterApply" class="largeButton">APPLY</button>
+            </div>
+            <label id="dropdownTab" for="dropdownTabCheckbox"></label>
+        </div>
+    </div>
+    <button id="disconnect"></button>
+</body>
+</html>
