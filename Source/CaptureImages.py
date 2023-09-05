@@ -23,7 +23,7 @@ while True:
     if ret == True:
         # Draw and display the corners
         cv2.drawChessboardCorners(img2, (CHESSBOARD_CORNER_NUM_X,CHESSBOARD_CORNER_NUM_Y), corners, ret)
-        delay = 50
+        delay = 10
     cv2.imshow("img", img2)
     key = cv2.waitKey(delay) & 0xFF
     if key == ord('c'):
@@ -31,5 +31,5 @@ while True:
         cv2.imwrite(name, img)
         count += 1
     if key == ord('q'):
-        break;
+        break
 cv2.destroyAllWindows()
