@@ -1,34 +1,51 @@
-import Jetson.GPIO as GPIO
 import time
+import adafruit_blinka as board
+import busio
+from adafruit_pca9685 import PCA9685
 
-# Set GPIO mode to BCM
-GPIO.setmode(GPIO.BCM)
+i2c = busio.I2C(27, 28)
+pca = PCA9685(i2c)
 
-# Define the GPIO pin for ESC control
-esc_gpio_pin = 18  # Change this to the appropriate GPIO pin number
+pca.frequency = 50
 
-# Set up the GPIO pin for output
-GPIO.setup(esc_gpio_pin, GPIO.OUT)
+esc_channel = 7
+servo_channel = 0
 
-# Create a PWM object for the ESC control
-pwm = GPIO.PWM(esc_gpio_pin, 50)  # 50 Hz PWM signal (standard for ESC)
+esc_min_pulse = 1000
+esc_max_pulse = 2000
 
-# Start the PWM signal with 0% duty cycle (throttle off)
-pwm.start(0)
+servo_min_pulse = 1000
+servo_max_pulse = 2000
+
+def set_esc_speed(pulse_width):
+    pca.channels[esc_channel].duty_cycle = int(pulse_width / 20 * 0xFFF)
+
+def set_servo_angle(angle):
+    angle = max(min(angle,180),0)
+    pulse_width= servo_max_pulse+(servo_max_pulse-servo_min_pulse)*angle/180
+    pca.channels[servo_channel].duty_cycle = int(pulse_width/20*0xFFF)
 
 try:
     while True:
-        # Set different duty cycles to control the ESC
-        pwm.ChangeDutyCycle(10)  # 10% throttle (minimum)
-        time.sleep(2)  # Keep the throttle at 10% for 2 seconds
-        
-        pwm.ChangeDutyCycle(50)  # 50% throttle (midway)
-        time.sleep(2)  # Keep the throttle at 50% for 2 seconds
-        
-        pwm.ChangeDutyCycle(90)  # 90% throttle (maximum)
-        time.sleep(2)  # Keep the throttle at 90% for 2 seconds
+        set_esc_speed(esc_min_pulse)
+        time.sleep(2)
+
+        for pulse in range(esc_min_pulse,esc_max_pulse,10):
+            set_esc_speed(pulse)
+            time.sleep(0.1)
+
+            set_servo_angle(90)
+            time.sleep(2)
+
+            set_servo_angle(0)
+            time.sleep(2)
 
 except KeyboardInterrupt:
-    # Stop the PWM signal and clean up GPIO
-    pwm.stop()
-    GPIO.cleanup()
+    set_esc_speed(esc_min_pulse)
+    set_servo_angle(0)
+    time.sleep(1)
+
+    for i in range(16):
+        pca.channels[i].duty_cycle = 0
+
+        print("OFF")
