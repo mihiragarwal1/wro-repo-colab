@@ -1,0 +1,564 @@
+body {
+    overflow: hidden;
+    margin: 0px 0px;
+    --min-sidebar-width: 40vw;
+    --rawdump-width: 0vw;
+    transition: 200ms ease --rawdump-width;
+}
+div {
+    font-family: sans-serif;
+}
+img {
+    -webkit-user-drag: none;
+    image-rendering: crisp-edges;
+}
+canvas {
+    image-rendering: crisp-edges;
+}
+
+*:disabled {
+    cursor: not-allowed;
+}
+.largeButton {
+    height: 32px;
+    margin: 16px 16px;
+    margin-bottom: 0px;
+    font: 12px sans-serif;
+    font-weight: bolder;
+    border: 4px outset darkgray;
+    cursor: pointer;
+}
+.largeButton:active {
+    border-style: inset;
+}
+.largeButton:disabled {
+    color: initial;
+    background-color: gray !important;
+    border-color: grey !important;
+    cursor: not-allowed !important;
+}
+.largeButton:disabled:active {
+    border-style: outset;
+}
+.generateToggle {
+    white-space: nowrap;
+}
+.toggle {
+    display: inline-block;
+    position: relative;
+    width: 40px;
+    height: 20px;
+    margin: 4px 4px;
+}
+.toggleInput {
+    opacity: 0px;
+    width: 0px;
+    height: 0px;
+}
+.toggleSlider {
+    position: absolute;
+    top: 2px;
+    left: 0px;
+    width: 36px;
+    height: 10px;
+    background-color: #EE0000;
+    border: 2px solid black;
+    transition: 0.1s linear;
+    cursor: pointer;
+}
+.toggleSlider::before {
+    position: absolute;
+    top: -6px;
+    left: 0px;
+    width: 20px;
+    height: 20px;
+    content: '';
+    background-color: lightgrey;
+    border: 2px solid black;
+    transition: 0.1s linear;
+    transform: translateX(-4px);
+}
+.toggleInput:checked + .toggleSlider {
+    background-color: #00AA00;
+}
+.toggleInput:checked + .toggleSlider::before {
+    transform: translateX(16px);
+}
+.toggleInput:disabled + .toggleSlider, .toggleInput:disabled + .toggleSlider::before {
+    cursor: not-allowed !important;
+}
+.slider {
+    appearance: none;
+    min-width: 0px;
+    height: 10px;
+    background-color: lightgray;
+    border: 2px solid black;
+    margin-right: 8px;
+}
+.slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid black;
+    cursor: grab;
+}
+.slider::-webkit-slider-thumb:active {
+    cursor: grabbing;
+}
+.divider {
+    width: 80%;
+    height: 2px;
+    background-color: gray;
+    margin: 16px 0px;
+    align-self: center;
+}
+
+#leftPane {
+    display: flex;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: var(--sidebar-width);
+    height: 100vh;
+    flex-direction: column;
+    align-items: stretch;
+    container-type: size;
+    border-right: 4px solid grey;
+    --sidebar-width: calc(100vw - min(calc(100vw - var(--min-sidebar-width) + var(--rawdump-width)), calc(100vh + var(--rawdump-width))) - 4px);
+    z-index: 1;
+}
+#rightPane {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: min(calc(100vw - var(--min-sidebar-width) + var(--rawdump-width)), calc(100vh + var(--rawdump-width)));
+    height: 100vh;
+    background-color: #444;
+    z-index: 0;
+}   
+#banner {
+    display: inline-block;
+    height: 80px;
+    width: 304px;
+    transition: 100ms linear opacity;
+}
+@container (max-width: 420px) {
+    #banner {
+        opacity: 0;
+    }
+}
+@container (max-width: 97px) {
+    #banner {
+        display: none;
+    }
+}
+
+#logButtonsCollapsible {
+    flex-grow: 1;
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 0px;
+    border-top: 4px solid black;
+    border-bottom: 4px solid black;
+}
+
+#buttonsContainer {
+    position: relative;
+    height: 100%;
+    border-right: 4px solid black;
+    pointer-events: none;
+}
+#slideout {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    --tabImage: url(./assets/arrow-right.svg);
+    pointer-events: all;
+}
+#slideoutTab {
+    display: none;
+    position: absolute;
+    top: -4px;
+    right: -32px;
+    width: 24px;
+    height: 100%;
+    background-color: lightgray;
+    border: 4px solid black;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 80% 80%;
+    background-image: var(--tabImage);
+    cursor: pointer;
+}
+#slideoutTabCheckbox {
+    opacity: 0;
+}
+#slideoutBody {
+    height: calc(100% - 16px);
+    padding: 8px 8px;
+    margin-right: -4px;
+    border-right: 4px solid black;
+    overflow-y: auto;
+}
+
+#buttons {
+    display: flex;
+    flex-direction: column;
+}
+#buttonModifiers {
+    width: 100%;
+    margin-top: 8px;
+    text-align: center;
+}
+#streamButtonContainer, #captureButtonContainer, #predictButtonContainer {
+    display: flex;
+    width: 100%;
+    margin-top: 8px;
+    align-items: center;
+}
+#streamToggle, #predictToggle {
+    display: none;
+}
+#stream, #capture, #predict, #resetPredictor {
+    flex-grow: 1;
+    background-color: lime;
+    border-color: limegreen;
+    margin: 0px 2px;
+}
+#resetPredictor {
+    flex-grow: 0;
+    background-color: red;
+    border-color: firebrick;
+}
+
+#mapControls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#sessionFileControls {
+    text-align: center;
+}
+#downloadFrame, #importSession, #exportSession {
+    width: min(60px, calc(50% - 8px));
+    height: unset;
+    margin: 4px 4px;
+    aspect-ratio: 1.4;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 80% 80%;
+}
+#downloadFrame {
+    background-size: 100% 100%;
+    background-image: url(./assets/image.svg);
+}
+#importSession {
+    background-image: url(./assets/import.svg);
+}
+#exportSession {
+    background-image: url(./assets/export.svg);
+}
+
+#log {
+    height: 100%;
+    background-color: white;
+    font-size: 20px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+.logBlock {
+    background-color: lightgray;
+    padding: 4px 16px;
+    margin-top: 6px;
+    margin-bottom: 2px;
+    line-break: anywhere;
+}
+.connectNow {
+    float: right;
+    height: 24px;
+    margin-left: 16px;
+    font: 12px sans-serif;
+    font-weight: bolder;
+    border: 4px outset crimson;
+    background-color: red;
+    cursor: pointer;
+}
+
+#display {
+    position: relative;
+    display: flex;
+    width: var(--sidebar-width);
+    /* because aspect-ratio wasn't enough */
+    min-height: calc((var(--sidebar-width) * 77) / 272);
+    flex-direction: row;
+    container-type: size;
+    aspect-ratio: 272 / 77;
+}
+#fps {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    padding: 4px 4px;
+    font-size: 14px;
+    color: white;
+    background-color: #000A;
+}
+#display0, #display1 {
+    position: relative;
+    width: 50%;
+    background-color: black;
+    aspect-ratio: 136 / 77;
+}
+#display0Img, #display1Img {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+    border: none;
+}
+#display0Overlay, #display1Overlay {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+}
+@container (max-width: 70vh) {
+    #logButtonsCollapsible {
+        grid-template-columns: 28px 1fr;
+    }
+
+    #buttonsContainer {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: calc(100vw - 28px);
+        border-right: none;
+        z-index: 100;
+    }
+    #slideout {
+        width: unset;
+        margin-top: -4px;
+        margin-bottom: -4px;
+        border-top: 4px solid black;
+        border-bottom: 4px solid black;
+        transform: translateX(-100%);
+        transition: 200ms ease transform;
+    }
+    #slideoutTab {
+        display: block;
+    }
+    #slideoutTabCheckbox:checked~#slideout {
+        transform: translateX(0);
+        --tabImage: url(./assets/arrow-left.svg);
+    }
+    #slideoutBody {
+        height: unset;
+        min-height: calc(100% - 16px);
+        max-height: calc(100vh - min(97px, var(--min-sidebar-width)) - 24px);
+        border-top: 4px;
+        background-color: lightgray;
+    }
+
+    #log {
+        grid-column: 2 / 3;
+    }
+
+    #display {
+        flex-direction: column;
+        min-height: calc((var(--sidebar-width) * 154) / 136);
+        aspect-ratio: 136 / 154;
+    }
+    #display0, #display1 {
+        width: 100%;
+    }
+}
+
+#historyControlsWrapper {
+    position: relative;
+}
+#historyControls {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: var(--sidebar-width);
+    min-height: 6vh;
+}
+#historyControlsBody {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+    padding-top: 16px;
+    transition: 100ms linear transform;
+    transform: translateY(100%);
+}
+#historyPrevious, #historyNext {
+    width: 6vh;
+    height: 8vh;
+    font-size: 5vh;
+    font-family: Impact, 'Arial Narrow Bold', sans-serif;
+    color: black;
+    background-color: #AAA;
+    border: 0.5vh solid white;
+    margin: 1.5vh;
+    cursor: pointer;
+}
+#historyPrevious:disabled, #historyNext:disabled {
+    color: gray;
+    cursor: not-allowed;
+}
+#historySlider {
+    min-width: none;
+    width: none;
+    height: 4vh;
+    margin-top: 3vh;
+    background-color: #AAA;
+    border: 0.5vh solid white;
+}
+#historySlider::-webkit-slider-thumb {
+    width: 4vh;
+    height: 8vh;
+    background-color: lightgray;
+    border: 0.5vh solid grey;
+}
+#historyControls:hover #historyControlsBody {
+    transform: translateY(0);
+}
+
+#dropdown {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 100%;
+    background-color: lightgray;
+    transition: 200ms ease transform;
+    transform: translateY(-100%);
+    --tabImage: url(./assets/arrow-down.svg);
+}
+#dropdownTab {
+    position: absolute;
+    bottom: -28px;
+    left: 50%;
+    width: 24px;
+    height: 24px;
+    background-color: lightgray;
+    border: 4px solid black;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 80% 80%;
+    background-image: var(--tabImage);
+    transform: translateX(-50%);
+    cursor: pointer;
+}
+#dropdownTabCheckbox {
+    opacity: 0;
+}
+#dropdownTabCheckbox:checked~#dropdown {
+    transform: translateY(0);
+    --tabImage: url(./assets/arrow-up.svg);
+}
+
+#map {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: min(calc(100vw - var(--min-sidebar-width)), 100vh);
+    height: min(calc(100vw - var(--min-sidebar-width)), 100vh);
+    background-color: black;
+}
+
+#filterAdjust {
+    width: calc(100% - 40px);
+    padding: 16px;
+    padding-bottom: 0px;
+    border: 4px solid black;
+}
+#filterAdjustLabels {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    grid-template-rows: 24px;
+    width: 100%;
+    margin-top: -8px;
+    margin-bottom: 8px;
+}
+#filterAdjustLabels span {
+    font-weight: bold;
+    font-size: 20px;
+    width: 100%;
+    padding-left: 8px;
+}
+#filterAdjustSliders {
+    display: grid;
+    width: 100%;
+    grid-template-columns: auto 1fr auto 1fr;
+    grid-template-rows: repeat(6, 24px);
+}
+#filterAdjustIndicators {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(2, auto);
+    grid-template-rows: repeat(2, 24px);
+    grid-auto-flow: column;
+}
+.sliderH::-webkit-slider-thumb {
+    background-color: hsl(var(--hue), 100%, 50%);
+}
+.sliderS::-webkit-slider-thumb {
+    background-color: hsl(var(--hue), var(--saturation), 50%);
+}
+.sliderV::-webkit-slider-thumb {
+    background-color: hsl(var(--hue), var(--saturation), var(--value));
+}
+#filterApply {
+    width: 20%;
+    margin: 8px 8px;
+    margin-top: 4px;
+    background-color: lime;
+    border-color: limegreen;
+}
+
+#rawDumpContainer {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: var(--rawdump-width);
+    height: 100vh;
+    border-left: 4px solid grey;
+    background-color: white;
+    transform: translateX(4px);
+}
+#rawDumpTitle {
+    font-weight: bold;
+    font-size: 20px;
+    padding: 4px 8px;
+    border-bottom: 4px solid black;
+}
+#rawDumpContents {
+    display: grid;
+    grid-template-columns: min-content 1fr;
+    margin-right: 4px;
+    overflow-y: auto;
+}
+#rawDumpContents div {
+    border-bottom: 2px solid black;
+    border-right: 2px solid black;
+    padding: 4px 4px;
+    text-align: right;
+}
+#rawDumpContents div:nth-child(2n) {
+    border-right: none;
+    text-align: left;
+}
+
+#disconnect {
+    display: none;
+}
