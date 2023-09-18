@@ -1,3 +1,4 @@
+
 const log = document.getElementById('log');
 function appendLog(text, color, clean = true) {
     const div = document.createElement('div');
@@ -535,6 +536,19 @@ async function animateAll2() {
         document.body.style.transform = "scale(" + scale + ") rotate(" + rotate + "deg) translate(" + (Math.random() * 30 - 15) + "px, " + (Math.random() * 30 - 15) + "px)";
     }, 5);
 };
+
+fetch('/getip')
+    .then(response => response.json())
+    .then(data => {
+        const ip = data.ip;
+        // Now you can use the 'ip' variable in your client-side code
+        console.log('IP:', ip);
+
+        // Add the rest of your client-side code here that uses the 'ip' variable.
+        // For example, you can update the HTML content with the IP.
+        document.getElementById('ip-container').innerText = 'IP: ' + ip;
+    })
+    .catch(error => console.error('Error:', error));
 
 document.getElementById('slideoutTabCheckbox').addEventListener('click', () => sounds.click());
 document.getElementById('dropdownTabCheckbox').addEventListener('click', () => sounds.click());}

@@ -1,8 +1,8 @@
-from Controller import converter
-from Util import server
+import converter
+import server
 # from jetcam.csi_camera import CSICamera
-from IO.nvcamera import NVCamera
-from IO import io
+from nvcamera import NVCamera
+import io
 import traceback
 import cv2
 import os

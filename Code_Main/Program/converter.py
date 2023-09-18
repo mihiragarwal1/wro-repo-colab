@@ -1,5 +1,5 @@
-from IO import io
-from Util import server
+import io
+import server
 import traceback
 import numpy
 import cv2
@@ -20,7 +20,7 @@ imageHeight = 308
 focalLength = 100
 focalLength = 80
 focalLength = 100
-focalLength = 110
+# focalLength = 110
 wallHeightOffset = 3
 wallHeight = 10
 cameraOffsetX = 3
@@ -68,7 +68,7 @@ def filter(imgIn: numpy.ndarray):
         blurredImg = cv2.GaussianBlur(grayImage, (3, 3), 0)
         # edge detection
         lower = 30
-        upper = 100
+        upper = 90
         edgesImg = cv2.Canny(blurredImg, lower, upper, 3)
         # combine images
         return [edgesImg, blurredG, blurredR]
@@ -91,7 +91,7 @@ def undistort(imgIn: numpy.ndarray):
 # distance scanner
 wallStartLeft = 164
 wallStartRight = 154
-undistortedWallStartLeft = [168, 167, 167, 166, 165, 165, 164, 164]
+undistortedWallStartLeft = [170, 168, 167, 166, 165, 165, 164, 164]
 undistortedWallStartRight = [158, 159, 160, 160, 160, 160, 160, 160]
 
 maximumTopWallHeightLeft = 4

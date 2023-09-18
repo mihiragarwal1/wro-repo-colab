@@ -1,7 +1,7 @@
 
 
-from IO import io
-from Util import server
+import io
+import server
 import adafruit_mpu6050
 import board
 import busio

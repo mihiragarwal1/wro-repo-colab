@@ -1,6 +1,6 @@
-from IO import io
-from Util import server
-from Controller import converter
+import io
+import server
+import converter
 import traceback
 import numpy
 import math
@@ -118,7 +118,10 @@ uTurning = False
 uTurnStage = 0
 uTurnGyroAngle = 0
 uTurnWallDistance = 0
+uTurnAroundPillar = 0
 # carAngle = math.pi / 2
+
+lastPillar = [None]
 
 maxErrorDistance = 20
 

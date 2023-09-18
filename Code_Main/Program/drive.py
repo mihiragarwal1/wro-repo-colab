@@ -1,5 +1,5 @@
-from IO import io
-from Util import server
+import io
+import server
 from adafruit_servokit import ServoKit
 import busio
 import board
@@ -17,7 +17,7 @@ __currStr = 0
 __throttleFwd = 0.08
 __throttleRev = -0.15
 __steeringCenter = 90
-__steeringRange = 40
+__steeringRange = 45
 __steeringTrim = 8
 __smoothFactor = 0.8
 __thread = None
