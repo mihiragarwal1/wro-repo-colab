@@ -1,148 +1,174 @@
-import io
-import server
-import simplecontroller as controller
-import converter
-import traceback
-import cv2
-import base64
-import time
+from IO import io
+io.setup()
+from IO import carDrive as drive
+from IO import camera
+from Utils import server
+from AI import preProcessingFilter as filter
 from threading import Thread
+import cv2
+import time
+import base64
 
+__forward = 0
+__backward = 0
+__left = 0
+__right = 0
 running = True
+streamThread = None
+streamThread2 = None
+streaming = False
+streaming2 = False
 def main():
     global running
     try:
-        server.open()
         io.setStatusBlink(2)
-        quality = [int(cv2.IMWRITE_JPEG_QUALITY), 10]
-        streaming = False
-        predictStreaming = False
-        def idManual(data):
-            server.emit('idManual')
-        def drive(data):
-            io.drive.throttle(data[0]['throttle'])
-            io.drive.steer(data[0]['steering'])
+        server.open()
+        drive.start()
+        camera.start()
+        def keys(data):
+            global __forward, __backward, __left, __right
+            key = data['key']
+            if key == 'w':
+                __forward = 100
+            elif key == 'W':
+                __forward = 0
+            elif key == 's':
+                __backward = -100
+            elif key == 'S':
+                __backward = 0
+            elif key == 'a':
+                __left = -100
+            elif key == 'A':
+                __left = 0
+            elif key == 'd':
+                __right = 100
+            elif key == 'D':
+                __right = 0
+            drive.throttle(__forward+__backward)
+            drive.steer(__left+__right)
+        def joystick(data):
+            __forward = max(data['throttle'], 0)
+            __backward = min(data['throttle'], 0)
+            __left = min(data['steering'], 0)
+            __right = max(data['steering'], 0)
+            drive.throttle(__forward+__backward)
+            drive.steer(__left+__right)
         def capture(data):
-            try:
-                if data[0]['save'] == True:
-                    if data[0]['filter'] == True:
-                        converter.setColors(data[0]['colors'], True)
-                    io.camera.capture(data[0]['filter'], True)
-                else:
-                    if data[0]['filter'] == True:
-                        converter.setColors(data[0]['colors'], True)
-                        encoded = [
-                            base64.b64encode(cv2.imencode('.png', cv2.merge(converter.filter(io.camera.read()[0])))[1]).decode(),
-                            base64.b64encode(cv2.imencode('.png', cv2.merge(converter.filter(io.camera.read()[1])))[1]).decode(),
-                            1,
-                            0,
-                            0
-                        ]
-                        server.emit('capture', encoded)
-                    else:
-                        encoded = [
-                            base64.b64encode(cv2.imencode('.jpg', io.camera.read()[0], quality)[1]).decode(),
-                            base64.b64encode(cv2.imencode('.jpg', io.camera.read()[1], quality)[1]).decode(),
-                            0,
-                            0,
-                            0
-                        ]
-                        server.emit('capture', encoded)
-            except Exception as err:
-                traceback.print_exc()
-                io.error()
-                server.emit('programError', str(err))
+            camera.capture(server=server, drive=drive)
+        def captureStream(data):
+            if data['state'] == True:
+                camera.startSaveStream(server=server, drive=drive)
+            else:
+                camera.stopSaveStream(server)
+        def captureFilter(data):
+            filter.setColors(data, server=server)
+            camera.capture(filter=filter, server=server, drive=drive)
+        def captureFilterStream(data):
+            filter.setColors(data['colors'])
+            if data['state'] == True:
+                camera.startSaveStream(filter=filter, server=server, drive=drive)
+            else:
+                camera.stopSaveStream(server)
         def stream(data):
-            nonlocal streaming
-            streaming = not streaming
-            if data[0]['save'] == True:
-                if not streaming:
-                    io.camera.stopSaveStream()
-                else:
-                    if data[0]['filter'] == True:
-                        converter.setColors(data[0]['colors'], True)
-                    io.camera.startSaveStream(data[0]['filter'], True)
+            global streamThread, streaming
+            if data['state'] == True:
+                if streaming == False:
+                    streaming = True
+                    def loop():
+                        global streaming, running
+                        try:
+                            while streaming and running:
+                                start = time.time()
+                                encoded = base64.b64encode(cv2.imencode('.png', camera.read())[1]).decode()
+                                server.broadcast('capture', encoded)
+                                time.sleep(max(0.1-(time.time()-start), 0))
+                        except Exception as err:
+                            print(err)
+                    streamThread = Thread(target = loop)
+                    streamThread.start()
+                    server.broadcast('message', 'Began stream')
             else:
-                if not streaming:
-                    io.camera.stopStream()
-                else:
-                    if data[0]['filter'] == True:
-                        converter.setColors(data[0]['colors'], True)
-                    io.camera.startStream(data[0]['filter'])
-        def predictStream(data):
-            nonlocal predictStreaming
-            predictStreaming = not predictStreaming
-            if predictStreaming:
-                def loop():
-                    nonlocal predictStreaming
-                    try:
-                        while predictStreaming:
-                            start = time.time()
-                            controller.drive(True)
-                            time.sleep(max(0.1-(time.time()-start), 0))
-                    except Exception as err:
-                        traceback.print_exc()
-                        io.error()
-                        server.emit('programError', str(err))
-                thread = Thread(target = loop)
-                thread.start()
-                server.emit('message', 'Began prediction stream')
-                server.emit('predictStreamState', [True])
-                print('Began prediction stream')
+                if streaming == True:
+                    streaming = False
+                    streamThread.join()
+                    server.broadcast('message', 'Ended stream')
+        def filterstream(data):
+            global streamThread2, streaming2
+            filter.setColors(data['colors'])
+            if data['state'] == True:
+                if streaming2 == False:
+                    streaming2 = True
+                    def loop():
+                        global streaming2, running
+                        try:
+                            while streaming2 and running:
+                                start = time.time()
+                                encoded = base64.b64encode(cv2.imencode('.png', filter.filter(camera.read(), False))[1]).decode()
+                                server.broadcast('capture', encoded)
+                                time.sleep(max(0.05-(time.time()-start), 0))
+                        except Exception as err:
+                            print(err)
+                    streamThread2 = Thread(target = loop)
+                    streamThread2.start()
+                    server.broadcast('message', 'Began filtered stream')
             else:
-                server.emit('message', 'Ended prediction stream')
-                server.emit('predictStreamState', [False])
-                print('Ended prediction stream')
-        def resetPrediction(data):
-            controller.slam.carAngle = 0
-        def getColors(data):
-            server.emit('colors', converter.getColors())
-        def setColors(data):
-            converter.setColors(data[0], True)
-        def getStreamState(data):
-            nonlocal predictStreaming
-            server.emit('streamState', io.camera.streamState())
-            server.emit('predictStreamState', [predictStreaming])
-        server.on('idManual', idManual)
-        server.on('drive', drive)
-        server.on('capture', capture)
-        server.on('stream', stream)
-        server.on('predictStream', predictStream)
-        server.on('resetPrediction', resetPrediction)
-        server.on('getColors', getColors)
-        server.on('setColors', setColors)
-        server.on('getStreamState', getStreamState)
+                if streaming2 == True:
+                    streaming2 = False
+                    streamThread2.join()
+                    server.broadcast('message', 'Ended filtered stream')
+        def view(data):
+            encoded = base64.b64encode(cv2.imencode('.png', camera.read())[1]).decode()
+            server.broadcast('capture', encoded)
+        def viewFilter(data):
+            filter.setColors(data)
+            encoded = base64.b64encode(cv2.imencode('.png', filter.filter(camera.read(), False))[1]).decode()
+            server.broadcast('capture', encoded)
+        def prediction(data):
+            filter.predict(camera.read(), server, False)
+            server.broadcast('message', 'Ran prediction on image')
+        def colors(data):
+            filter.setColors(data)
+        server.addListener('key', keys)
+        server.addListener('joystick', joystick)
+        server.addListener('capture', capture)
+        server.addListener('captureStream', captureStream)
+        server.addListener('colors', colors)
+        server.addListener('captureFilter', captureFilter)
+        server.addListener('captureFilterStream', captureFilterStream)
+        server.addListener('view', view)
+        server.addListener('viewFilter', viewFilter)
+        server.addListener('stream', stream)
+        server.addListener('filterstream', filterstream)
+        server.addListener('prediction', prediction)
         global running
         running = True
         def stop(data):
             global running
             running = False
-            print('\n STOPPING PROGRAM. DO NOT INTERRUPT.')
-            io.close()
+            io.setStatusBlink(0)
+            camera.stop()
             server.close()
-            exit()
-        io.imu.setAngle(0)
-        server.on('stop', stop)
+            drive.stop()
+            io.close()
+            print('stopped by emergency stop button')
+            exit(0)
+        server.addListener('stop', stop)
         while running:
             msg = input()
             if msg == 'reset':
-                server.emit('colors', converter.setDefaultColors())
-            elif msg == 'calibrate-gyro':
-                io.imu.calibrate()
-            elif msg == 'stop':
-                break
+                server.broadcast('colors', filter.setDefaultColors())
             elif msg != '':
-                server.emit('unsafemessage', msg)
+                server.broadcast('message', msg)
     except KeyboardInterrupt:
         print('\nSTOPPING PROGRAM. DO NOT INTERRUPT.')
+        running = False
+        camera.stop()
+        server.close()
+        drive.stop()
+        io.close()
     except Exception as err:
-        print('---------------------- AN ERROR OCCURED ----------------------')
-        traceback.print_exc()
+        print(err)
         io.error()
-        server.emit('programError', str(err))
-    running = False
-    io.close()
-    server.close()
 
 if __name__ == '__main__':
     main()
