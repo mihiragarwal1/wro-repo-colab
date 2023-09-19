@@ -1,8 +1,8 @@
-from IO import io
+import IO.gpio as io
 io.setup()
 from IO import carDrive as drive
 from IO import camera
-from Utils import server
+import server
 from AI import preProcessingFilter as filter
 from threading import Thread
 import cv2

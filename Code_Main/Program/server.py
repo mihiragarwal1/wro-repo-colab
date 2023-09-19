@@ -3,12 +3,12 @@ import websockets
 import json as JSON
 import typing
 from threading import Thread
-from IO import io
+from IO import gpio as io
 import time
 
 # WebSocket server module for testing only
 
-running = False
+running = True
 
 # listeners and broadcast
 callbacks = {}
@@ -132,7 +132,7 @@ def __start():
     global running, __server, threadLoop
     running = True
     asyncio.set_event_loop(threadLoop)
-    server = websockets.serve(__server, '192.168.1.151', 4040)
+    server = websockets.serve(__server, '192.168.0.100', 4040)
     threadLoop.run_until_complete(server)
     threadLoop.run_forever()
 

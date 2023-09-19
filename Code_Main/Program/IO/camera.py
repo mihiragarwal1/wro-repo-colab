@@ -2,14 +2,14 @@ from jetcam.csi_camera import CSICamera
 import cv2
 import os
 from threading import Thread
-from IO import io
+from IO import gpio as io
 import base64
 import time
 
 # camera module for capturing input data
 
-camera = CSICamera(width=272, height=154, capture_width=3264, capture_height=1848, capture_fps=28)
-# camera = CSICamera(width=1632, height=924, capture_width=3264, capture_height=1848, capture_fps=28)
+# camera = CSICamera(width=272, height=154, capture_width=3264, capture_height=1848, capture_fps=28)
+camera = CSICamera(width=224, height=224, capture_width=1080, capture_height=720, capture_fps=30)
 running = False
 currentImage = [[[]]]
 thread = None

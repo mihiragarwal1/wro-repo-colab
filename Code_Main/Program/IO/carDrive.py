@@ -1,6 +1,7 @@
 import Jetson.GPIO as GPIO
+# import RPi.GPIO as GPIO
 from threading import Thread
-from IO import io
+from IO import gpio as io
 import time
 import math
 
@@ -45,7 +46,7 @@ def start():
             try:
                 global running, t, s, currThrottle, currSteering, targetThrottle, targetSteering, thrFeaFREQ, thrFeaDiv, tickrate
                 # global running, t, s, currThrottle, currSteering, targetThrottle, targetSteering, steerSpeed, tickrate
-                # timer = 0
+                timer = 0
                 while running:
                     start = time.time()
                     # convert throttle to active time

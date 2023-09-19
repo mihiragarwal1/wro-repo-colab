@@ -2,7 +2,7 @@ import Jetson.GPIO as GPIO
 import time
 import os
 
-path = '/home/nano/Documents/SPARK_FutureEngineers_2022/'
+path = '/home/mihir/Desktop/WRO-DATA/wro-repo-colab/Code_Main/Program/'
 
 if __name__ == '__main__':
     GPIO.setwarnings(False)

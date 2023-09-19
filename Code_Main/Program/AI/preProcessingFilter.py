@@ -1,4 +1,4 @@
-from IO import io
+from IO import gpio as io
 import numpy
 import cv2
 import base64

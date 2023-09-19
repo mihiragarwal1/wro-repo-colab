@@ -4,8 +4,7 @@ import time
 
 # general io module
 
-path = '/home/nano/Documents/SPARK_FutureEngineers_2022/'
-
+path = '/home/mihir/Desktop/WRO-DATA/wro-repo-colab/Code_Main'
 running = False
 thread = None
 statusBlink = 0
@@ -13,12 +12,12 @@ def setup():
     global running, thread, path, statusBlink
     if running == False:
         running = True
-        fd = open(path + '../lock.txt', 'w+')
-        if fd.read() == '1':
-            error()
-            raise Exception('ERROR: SETUP HAS DETECTED THAT SETUP IS CURRENTLY RUNNING. PLEASE CLOSE SETUP TO CONTINUE')
-        fd.write('1')
-        fd.close()
+        # fd = open(path + '../lock.txt', 'w+')
+        # if fd.read() == '1':
+        #     error()
+        #     raise Exception('ERROR: SETUP HAS DETECTED THAT SETUP IS CURRENTLY RUNNING. PLEASE CLOSE SETUP TO CONTINUE')
+        # fd.write('1')
+        # fd.close()
         GPIO.setwarnings(False)
         GPIO.cleanup()
         GPIO.setmode(GPIO.BOARD)
