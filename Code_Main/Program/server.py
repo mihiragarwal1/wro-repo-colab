@@ -132,7 +132,8 @@ def __start():
     global running, __server, threadLoop
     running = True
     asyncio.set_event_loop(threadLoop)
-    server = websockets.serve(__server, '192.168.0.100', 4040)
+    # server = websockets.serve(__server, '192.168.0.100', 4040)
+    server = websockets.serve(__server, '172.16.6.165', 4040)
     threadLoop.run_until_complete(server)
     threadLoop.run_forever()
 

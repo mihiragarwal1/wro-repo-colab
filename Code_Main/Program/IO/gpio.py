@@ -1,10 +1,10 @@
-import Jetson.GPIO as GPIO
+import Jetson.GPIO.gpio as GPIO
 from threading import Thread
 import time
 
 # general io module
 
-path = '/home/mihir/Desktop/WRO-DATA/wro-repo-colab/Code_Main'
+path = '/home/mihir/Desktop/WRO-DATA/wro-repo-colab/Code_Main/Program'
 running = False
 thread = None
 statusBlink = 0

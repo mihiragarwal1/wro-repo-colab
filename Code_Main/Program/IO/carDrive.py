@@ -1,4 +1,4 @@
-import Jetson.GPIO as GPIO
+import Jetson.GPIO.gpio as GPIO
 # import RPi.GPIO as GPIO
 from threading import Thread
 from IO import gpio as io
