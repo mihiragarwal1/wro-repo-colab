@@ -1,8 +1,7 @@
 import cv2
 
 # Initialize the camera
-cap = cv2.VideoCapture("nvarguscamerasrc ! video/x-raw(memory:NVMM), width=(int)640, height=(int)480, format=(string)NV12, framerate=(fraction)30/1 ! nvvidconv ! video/x-raw, format=(string)BGRx ! videoconvert ! video/x-raw, format=(string)BGR ! appsink")
-
+cap = cv2.VideoCapture("nvarguscamerasrc-1.0")
 # Check if the camera opened successfully
 if not cap.isOpened():
     print("Error: Could not open camera.")

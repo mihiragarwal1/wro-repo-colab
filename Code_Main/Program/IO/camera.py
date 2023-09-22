@@ -7,14 +7,14 @@ import base64
 import time
 
 # camera module for capturing input data
-
-camera = CSICamera(width=224, height=224,capture_width=3840/2, capture_height=2160/2, capture_fps=30)
-# camera = CSICamera(width=224, height=224, capture_width=854, capture_height=480, capture_fps=30)
+# cammera = CSICamera()
+# camera = CSICamera(capture_device=0,width=960, height=540,capture_width=3840, capture_height=2160, capture_fps=30)
+camera = CSICamera(width=224, height=224, capture_width=854, capture_height=480, capture_fps=30)
 running = False
 currentImage = [[[]]]
 thread = None
 
-def start():
+def start():                
     global running, camera, thread
     if running == False:
         camera.running = True
@@ -50,6 +50,7 @@ def capture(filter = None, server = None, drive = None):
     global currentImage
     try:
         name = str(round(time.time()*1000))
+        frame = cammera.value
         if filter != None:
             filteredImg = filter.filter(currentImage, False)
             cv2.imwrite('filtered_out/' + name + '.png', filteredImg)
