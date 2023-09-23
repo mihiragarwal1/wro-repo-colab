@@ -103,3 +103,7 @@ def trim(trim: int):
 def currentSteering():
     global currSteering
     return -currSteering
+
+
+
+start()

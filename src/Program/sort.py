@@ -1,5 +1,8 @@
 from numpy import ndarray
-
+import numpy
+import os
+import Image
+import statistics
 
 redColors = [75,75,100]
 greenColors = [50,75,40]
@@ -11,9 +14,9 @@ def checkWallColor(array):
         return True
     return False
 
-for images in os.listdir("C:\\Users\\guliz\\Documents\\images"):
+for images in os.listdir("C:\\Users\\mihir\\Documents\\images"):
     if images.endswith(".png"):
-        image = Image.open("C:\\Users\\guliz\\Documents\\images\\" + images)
+        image = Image.open("C:\\Users\\mihir\\Documents\\images\\" + images)
         array = numpy.array(image)
         array2 = numpy.array(image)
         for i in range(len(array2)):

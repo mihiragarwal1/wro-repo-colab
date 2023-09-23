@@ -8,7 +8,7 @@ from threading import Thread
 import cv2
 import time
 import base64
-
+ 
 __forward = 0
 __backward = 0
 __left = 0
@@ -23,6 +23,7 @@ def main():
     try:
         io.setStatusBlink(2)
         server.open()
+        print("started server")
         drive.start()
         camera.start()
         def keys(data):

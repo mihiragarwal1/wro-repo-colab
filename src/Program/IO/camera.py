@@ -7,9 +7,9 @@ import base64
 import time
 
 # camera module for capturing input data
-# cammera = CSICamera()
+camera = CSICamera()
 # camera = CSICamera(capture_device=0,width=960, height=540,capture_width=3840, capture_height=2160, capture_fps=30)
-camera = CSICamera(width=224, height=224, capture_width=854, capture_height=480, capture_fps=30)
+# camera = CSICamera(capture_device=0,width=960, height=720, capture_width=960, capture_height=720, capture_fps=120)
 running = False
 currentImage = [[[]]]
 thread = None
@@ -19,13 +19,17 @@ def start():
     if running == False:
         camera.running = True
         running = True
+        print("..")
         def __capture():
             try:
+                print("....")
                 global running, camera, currentImage
                 # update loop that constantly updates the most recent image which can be read at any time
                 while running:
+                    # print("...llll.")
                     start = time.time()
                     currentImage = camera.value
+                    # print(currentImage)
                     time.sleep(max(0.0125-(time.time()-start), 0))
             except Exception as err:
                 print(err)
@@ -50,7 +54,7 @@ def capture(filter = None, server = None, drive = None):
     global currentImage
     try:
         name = str(round(time.time()*1000))
-        frame = cammera.value
+        frame = camera.value
         if filter != None:
             filteredImg = filter.filter(currentImage, False)
             cv2.imwrite('filtered_out/' + name + '.png', filteredImg)
