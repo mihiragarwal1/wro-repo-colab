@@ -1,4 +1,4 @@
-import Jetson.GPIO.gpio as GPIO
+import Jetson.GPIO as GPIO
 import time
 import os
 
@@ -18,4 +18,4 @@ if __name__ == '__main__':
     run_startup = fd.readlines()[0]
     if run_startup == 'true\n':
         print('Run-on-startup enabled!')
-        os.system('python3 ' + path + 'selfDrive.py wait_for_button no_server')
+        os.system('python3 ' + path + 'autodrive.py wait_for_button no_server')

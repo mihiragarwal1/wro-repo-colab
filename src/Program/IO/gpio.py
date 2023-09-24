@@ -1,91 +1,88 @@
-import Jetson.GPIO.gpio as GPIO
+import Jetson.GPIO as GPIO
 from threading import Thread
 import time
 
-# general io module
+# unified IO wrapper that handles all IO for the program
 
-path = '/home/mihir/Desktop/WRO-DATA/wro-repo-colab/Code_Main/Program'
-running = False
-thread = None
-statusBlink = 0
-def setup():
-    global running, thread, path, statusBlink
-    if running == False:
-        running = True
-        # fd = open(path + '../lock.txt', 'w+')
-        # if fd.read() == '1':
-        #     error()
-        #     raise Exception('ERROR: SETUP HAS DETECTED THAT SETUP IS CURRENTLY RUNNING. PLEASE CLOSE SETUP TO CONTINUE')
-        # fd.write('1')
-        # fd.close()
-        GPIO.setwarnings(False)
-        GPIO.cleanup()
-        GPIO.setmode(GPIO.BOARD)
-        GPIO.setup([11, 13, 32, 33], GPIO.OUT)
-        GPIO.setup(18, GPIO.IN)
-        GPIO.output([11, 13], GPIO.LOW)
-        # IO active indicator
-        statusBlink = True
-        def blink():
-            global running
-            while running:
-                if not statusBlink == 0:
-                    GPIO.output(11, GPIO.HIGH)
-                time.sleep(0.5)
-                if not statusBlink == 1:
-                    GPIO.output(11, GPIO.LOW)
-                time.sleep(0.5)
-        try:
-            thread = Thread(target = blink)
-            thread.start()
-        except:
-            error()
+__running = True
+__blinkThread = None
+__statusBlink = 0
+__borked = False
+__borkedThread = None
+
+def error():
+    global __borked, __borkedThread, __running
+    if __borked == False and __running:
+        __borked = True
+        def borkblink():
+            while __running:
+                GPIO.output(__ledRed, GPIO.HIGH)
+                time.sleep(0.1)
+                GPIO.output(__ledRed, GPIO.LOW)
+                time.sleep(0.1)
+                GPIO.output(__ledRed, GPIO.HIGH)
+                time.sleep(0.1)
+                GPIO.output(__ledRed, GPIO.LOW)
+                time.sleep(0.45)
+        __borkedThread = Thread(target = borkblink)
+        __borkedThread.start()
         return True
     return False
 
+GPIO.setwarnings(False)
+GPIO.cleanup()
+# GPIO.setmode(GPIO.BOARD)
+GPIO.setmode(GPIO.TEGRA_SOC) # stupid forced board mode
+__ledGreen = 'UART2_RTS'
+__ledRed = 'SPI2_SCK'
+__button = 'SPI2_CS0'
+GPIO.setup([__ledGreen, __ledRed], GPIO.OUT)
+GPIO.setup(__button, GPIO.IN)
+GPIO.output([__ledGreen, __ledRed], GPIO.LOW)
+
+from IO import drive
+from IO import camera
+from IO import imu
+
 def close():
-    global thread, running, path
-    if running == True:
-        fd = open(path + '../lock.txt', 'w+')
-        fd.write('0')
-        fd.close()
-        running = False
-        thread.join()
-        GPIO.output([11, 13], GPIO.LOW)
+    global __blinkThread, __borkedThread, __running, __borked
+    if __running:
+        __running = False
+        drive.stop()
+        camera.stop()
+        imu.stop()
+        if __borked:
+            __borkedThread.join()
+        __blinkThread.join()
+        GPIO.output([__ledGreen, __ledRed], GPIO.LOW)
         time.sleep(0.1)
         GPIO.cleanup()
         return True
     return False
 
-# button wait
-def waitForButton():
-    GPIO.wait_for_edge(18, GPIO.RISING)
-
-# indicators
-errorRunning = False
-
+# the status blink stuff
+__statusBlink = 1
 def setStatusBlink(blink: int):
-    global statusBlink
+    global __statusBlink
     # 0 = off
     # 1 = solid
-    # 2 = green
-    statusBlink = blink
+    # 2 = flashing
+    __statusBlink = min(2, max(0, blink))
 
-def error():
-    global errorRunning
-    if errorRunning == False:
-        errorRunning = True
-        def blink():
-            while True:
-                GPIO.output(13, GPIO.HIGH)
-                time.sleep(0.1)
-                GPIO.output(13, GPIO.LOW)
-                time.sleep(0.1)
-                GPIO.output(13, GPIO.HIGH)
-                time.sleep(0.1)
-                GPIO.output(13, GPIO.LOW)
-                time.sleep(0.45)
-        thread = Thread(target = blink)
-        thread.start()
-        return True
-    return False
+def __blink():
+    global __running
+    while __running:
+        if not __statusBlink == 0:
+            GPIO.output(__ledGreen, GPIO.HIGH)
+        time.sleep(0.5)
+        if not __statusBlink == 1:
+            GPIO.output(__ledGreen, GPIO.LOW)
+        time.sleep(0.5)
+
+# button
+def waitForButton():
+    GPIO.wait_for_edge(__button, GPIO.RISING)
+    GPIO.wait_for_edge(__button, GPIO.FALLING)
+
+__blinkThread = Thread(target = __blink)
+__blinkThread.start()

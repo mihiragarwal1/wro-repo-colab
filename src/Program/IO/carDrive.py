@@ -1,109 +1,72 @@
-import Jetson.GPIO.gpio as GPIO
-# import RPi.GPIO as GPIO
+from IO import io
+from Utilities import server
+from adafruit_servokit import ServoKit
+import busio
+import board
 from threading import Thread
-from IO import gpio as io
 import time
-import math
+import traceback
 
-# drive module for controlling throttle and steering output
+# drive module that does driving stuff
 
-# setup
-t = GPIO.PWM(32, 500)
-s = GPIO.PWM(33, 200)
+__pwm = ServoKit(channels = 16, i2c = busio.I2C(board.SCL_1, board.SDA_1))
 
-# pwm min max and speed
-thrBACK = 70
-thrMIN = 75
-thrMAX = 80
-thrBACK2 = 1_400_000
-thrMIN2 = 1_500_000
-thrMAX2 = 1_550_000
-strMAX = 47
-strMIN = 28
-strTRIM = 8
-# throttle feathering
-thrFeaFREQ = 10
-thrFeaDiv = 20
-# control variables
-targetThrottle = 0
-targetSteering = 0
-currThrottle = 0
-currSteering = 0
-steerSpeed = 0.3
-# control loop
-tickrate = 200
-running = False
-controlThread = None
+__currThr = 0
+__targetStr = 0
+__currStr = 0
+__throttleFwd = 0.08
+__throttleRev = -0.15
+__steeringCenter = 90
+__steeringRange = 45
+__steeringTrim = 8
+__smoothFactor = 0.8
+__thread = None
+__running = True
+def __update():
+    global __currStr, __targetStr, __steeringCenter, __steeringRange, __steeringTrim, __pwm, __running, __smoothFactor
+    try:
+        lastAngle = 0
+        while __running:
+            __currStr = ((1 - __smoothFactor) * __currStr) + (__smoothFactor * __targetStr)
+            angle = round((__currStr * __steeringRange / 100) + __steeringCenter + __steeringTrim)
+            if angle != lastAngle: __pwm.servo[1].angle = angle
+            lastAngle = angle
+            time.sleep(0.02)
+    except Exception as err:
+        traceback.print_exc()
+        io.error()
+        server.emit('programError', str(err))
+def steer(str: int):
+    global __targetStr
+    __targetStr = max(-100, min(str, 100))
+def throttle(thr: int):
+    global __pwm, __currThr, __throttleFwd, __throttleRev
+    __currThr = max(-100, min(thr, 100))
+    if (__currThr < 0):__pwm.continuous_servo[0].throttle = (__currThr / 100) * (-__throttleRev) + 0.1
+    else: __pwm.continuous_servo[0].throttle = (__currThr / 100) * __throttleFwd + 0.1
+def trim(trim: int):
+    global __steeringTrim
+    __steeringTrim = trim
+    steer(__currStr)
+def setSmoothFactor(smooth: float):
+    global __smoothFactor
+    __smoothFactor = max(0, min(smooth, 1))
 
-def start():
-    global controlThread, running
-    if running == False:
-        # begin
-        running = True
-        t.start(thrMIN)
-        s.start((strMIN+strMAX)/2)
-        def loop():
-            try:
-                global running, t, s, currThrottle, currSteering, targetThrottle, targetSteering, thrFeaFREQ, thrFeaDiv, tickrate
-                # global running, t, s, currThrottle, currSteering, targetThrottle, targetSteering, steerSpeed, tickrate
-                timer = 0
-                while running:
-                    start = time.time()
-                    # convert throttle to active time
-                    thrFeaACT = math.floor(abs(targetThrottle)/20)/thrFeaDiv
-                    if timer >= 1: timer = 0
-                    if timer <= thrFeaACT and thrFeaACT < 1 and targetThrottle > 10: currThrottle = 100
-                    elif targetThrottle < -10 or thrFeaACT >= 1: currThrottle = targetThrottle
-                    else: currThrottle = 0
-                    currThrottle = targetThrottle
-                    currSteering = targetSteering*steerSpeed + currSteering*(1-steerSpeed)
-                    # apply throttle and steering
-                    if (currThrottle < 0): t.ChangeDutyCycle((currThrottle/100)*(thrMIN-thrBACK)+thrMIN)
-                    else: t.ChangeDutyCycle((currThrottle/100)*(thrMAX-thrMIN)+thrMIN)
-                    if (currThrottle < 0): GPIO._set_pwm_duty_cycle(t._ch_info, (currThrottle/100)*(thrMIN2-thrBACK2)+thrMIN2)
-                    else: GPIO._set_pwm_duty_cycle(t._ch_info, (currThrottle/100)*(thrMAX-thrMIN)+thrMIN)
-                    s.ChangeDutyCycle((currSteering/100.0)*((strMAX-strMIN)/2)+((strMIN+strMAX)/2)+(strTRIM/10))
-                    # advance timer
-                    timer += thrFeaFREQ/tickrate
-                    time.sleep(max((1/tickrate)-(time.time()-start), 0))
-            except Exception as err:
-                print(err)
-                io.error()
-        controlThread = Thread(target = loop)
-        controlThread.start()
-        return True
-    return False
+def currentSteering():
+    global __currStr
+    return __currStr
+def getSmoothFactor():
+    global __smoothFactor
+    return __smoothFactor
 
 def stop():
-    global running, controlThread
-    if running == True:
-        running = False
-        controlThread.join()
-        t.ChangeDutyCycle(thrMIN)
-        s.ChangeDutyCycle((strMIN+strMAX)/2)
-        t.stop()
-        s.stop()
-        return True
-    return False
+    global __running
+    steer(0)
+    throttle(0)
+    __running = False
+    __thread.join()
 
-# inputs
-def steer(steering: int):
-    global targetSteering
-    targetSteering = max(-100, min(-steering, 100))
-
-def throttle(throttle: int):
-    global targetThrottle
-    targetThrottle = max(-100, min(throttle, 100))
-
-def trim(trim: int):
-    global strTRIM
-    strTRIM = trim
-
-# get current
-def currentSteering():
-    global currSteering
-    return -currSteering
-
-
-
-start()
+__thread = Thread(target = __update)
+__thread.start()
+steer(0)
+throttle(0)
