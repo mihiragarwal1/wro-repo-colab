@@ -1,6 +1,8 @@
 from Controllers import preProcessingController
 from Utilities import server
 # from jetcam.csi_camera import CSICamera
+from jetcam.csi_camera import CSICamera
+# from csi_camera import CSICamera
 from IO.nvcam import NVCamera
 from IO import gpio as io
 import traceback
@@ -16,10 +18,10 @@ import numpy
 __imageWidth = 544
 __imageHeight = 308
 
-# __camera0 = CSICamera(capture_device=0, width=__imageWidth, height=__imageHeight, capture_width=3264, capture_height=1848, capture_fps=28)
-# __camera1 = CSICamera(capture_device=1, width=__imageWidth, height=__imageHeight, capture_width=3264, capture_height=1848, capture_fps=28)
-__camera0 = NVCamera(sid=0, width=__imageWidth, height=__imageHeight)
-__camera1 = NVCamera(sid=1, width=__imageWidth, height=__imageHeight)
+__camera0 = CSICamera(capture_device=0, width=__imageWidth, height=__imageHeight, capture_width=3264, capture_height=1848, capture_fps=28)
+__camera1 = CSICamera(capture_device=1, width=__imageWidth, height=__imageHeight, capture_width=3264, capture_height=1848, capture_fps=28)
+# __camera0 = NVCamera(sid=0, width=__imageWidth, height=__imageHeight)
+# __camera1 = NVCamera(sid=1, width=__imageWidth, height=__imageHeight)
 __running = True
 __currentImages = [None, None]
 __thread = None
