@@ -6,7 +6,7 @@
 
 ***
 
-**Official GitHub repository for WRO USA Future Engineers team GIGABIT SPACE 2023. All code, documentation, and files are located here.**
+**Official GitHub repository for WRO Future Engineers team GIGABIT SPACE 2023. All code, documentation, and files are located here.**
 
 ***
 
