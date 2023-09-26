@@ -31,6 +31,7 @@ class NVCamera(traitlets.HasTraits):
             if not re:
                 raise RuntimeError('Could not read image from camera.')
         except:
+            print(cv2.getBuildInformation())
             raise RuntimeError('Could not initialize camera.')
 
     def read(self):
