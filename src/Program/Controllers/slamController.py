@@ -1,4 +1,4 @@
-from IO import io
+from IO import gpio as io
 from Utilities import server
 from Controllers import preProcessingController
 from Controllers import slam

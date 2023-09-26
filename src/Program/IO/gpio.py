@@ -40,7 +40,7 @@ GPIO.setup([__ledGreen, __ledRed], GPIO.OUT)
 GPIO.setup(__button, GPIO.IN)
 GPIO.output([__ledGreen, __ledRed], GPIO.LOW)
 
-from IO import drive
+from IO import carDrive
 from IO import camera
 from IO import imu
 
@@ -48,7 +48,7 @@ def close():
     global __blinkThread, __borkedThread, __running, __borked
     if __running:
         __running = False
-        drive.stop()
+        carDrive.stop()
         camera.stop()
         imu.stop()
         if __borked:

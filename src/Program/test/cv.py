@@ -1,7 +1,7 @@
 import cv2
 
 # Initialize the camera
-cap = cv2.VideoCapture("nvarguscamerasrc-1.0")
+cap = cv2.VideoCapture("nvarguscamerasrc-1.0", cv2.CAP_GSTREAMER)
 # Check if the camera opened successfully
 if not cap.isOpened():
     print("Error: Could not open camera.")

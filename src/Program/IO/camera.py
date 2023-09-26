@@ -23,10 +23,12 @@ __camera1 = NVCamera(sid=1, width=__imageWidth, height=__imageHeight)
 __running = True
 __currentImages = [None, None]
 __thread = None
+print("cam.0")
 
 __camera0.__running = True
 __camera1.__running = True
 def __update():
+    print("cam.1")
     try:
         global __running, __camera0, __camera1, __currentImages
         # update loop that constantly updates the most recent image which can be read at any time

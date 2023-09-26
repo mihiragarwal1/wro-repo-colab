@@ -1,4 +1,4 @@
-from IO import io
+from IO import gpio as io
 from Utilities import server
 from adafruit_servokit import ServoKit
 import busio

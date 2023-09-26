@@ -13,6 +13,7 @@ def gstreamer_pipeline(
     return (
         "nvarguscamerasrc ! "
         "video/x-raw(memory:NVMM), "
+        "sensor-id=0"
         "width=(int)%d, height=(int)%d, framerate=(fraction)%d/1 ! "
         "nvvidconv flip-method=%d ! "
         "video/x-raw, width=(int)%d, height=(int)%d, format=(string)BGRx ! "

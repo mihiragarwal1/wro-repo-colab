@@ -1,6 +1,7 @@
 from IO import gpio as io
 from Utilities import server
 import adafruit_mpu6050
+print("mpu")
 import board
 import busio
 from threading import Thread
@@ -12,7 +13,7 @@ import time
 __mpu = adafruit_mpu6050.MPU6050(busio.I2C(board.SCL, board.SDA))
 
 __angle = 0
-__trim = 0.03414636758096449 # change this to calibrated number
+__trim = -0.002108517613897882# change this to calibrated number
 __thread = None
 __running = True
 def __update():
@@ -52,7 +53,7 @@ def calibrate():
 def angle():
     global __angle
     return __angle
-def setAngle(newAngle: float = 0):
+def setAngle(newAngle = float(0)):
     global __angle
     __angle = newAngle
 
