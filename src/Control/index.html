@@ -4,271 +4,118 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Control Panel</title>
+    <title> Control Panel</title>
     <link rel="stylesheet" href="./style.css">
+    <script src="./config.js"></script>
+   
+    </script>
+    <script src="./socket.io.min.js"></script>
     <script src="./index.js" defer></script>
+    <script src="./display.js" defer></script>
+    <script src="/common/sound.js" defer></script>
 </head>
 <body>
-    <img id="banner1" src="./banner.png">
-    <img id="banner2" src="./logo.png">
-    <div id="eventLog">
-        <div style="font-weight: bold;">Log</div>
-        <div id="eventLogBody"></div>
-    </div>
-    <div id="captureButtons">
-        <button id="captureButton" class="largeButton">CAPTURE</button><br>
-        <button id="captureFilterButton" class="largeButton">FILTERED CAPTURE</button><br>
-        <button id="captureStreamButton" class="largeButton">START CAPTURE STREAM</button>
-        <button id="captureFilterStreamButton" class="largeButton">START FILTERED CAPTURE STREAM</button>
-        <button id="viewButton" class="largeButton">VIEW IMAGE</button>
-        <button id="viewFilterButton" class="largeButton">VIEW FILTERED IMAGE</button>
-        <button id="streamButton" class="largeButton">START STREAM</button>
-        <button id="filterStreamButton" class="largeButton">START FILTERED STREAM</button>
-        <button id="predictionButton" class="largeButton">VIEW PREDICTION</button>
-    </div>
-    <div id="filterAdjust">
-        <div style="font-size: 32px; font-weight: bold;">Adjust Filter</div>
-        <div style="font-size: 8px; font-weight: lighter; color: grey;">"Min" and "Max" do not refer to actual minimums and maximums - they refer to the bounds that the color values must be within to be considered.</div>
-        <table>
-            <tbody>
-                <tr>
-                    <td></td>
-                    <td>Red HSV</td>
-                    <td></td>
-                    <td>Green HSV</td>
-                    <td></td>
-                    <td>Blue HSV</td>
-                </tr>
-                <tr>
-                    <td>H max</td>
-                    <td>
-                        <input type="range" class="slider sliderH" min="0" max="180" step="2" id="redHMax" oninput="updateSlider(0);">
-                    </td>
-                    <td>H max</td>
-                    <td>
-                        <input type="range" class="slider sliderH" min="0" max="180" step="2" id="greenHMax" oninput="updateSlider(1);">
-                    </td>
-                    <td>H max</td>
-                    <td>
-                        <input type="range" class="slider sliderH" min="0" max="180" step="2" id="blueHMax" oninput="updateSlider(2);">
-                    </td>
-                </tr>
-                <tr>
-                    <td>S max</td>
-                    <td>
-                        <input type="range" class="slider sliderS" min="0" max="255" step="5" id="redSMax" oninput="updateSlider(3);">
-                    </td>
-                    <td>S max</td>
-                    <td>
-                        <input type="range" class="slider sliderS" min="0" max="255" step="5" id="greenSMax" oninput="updateSlider(4);">
-                    </td>
-                    <td>S max</td>
-                    <td>
-                        <input type="range" class="slider sliderS" min="0" max="255" step="5" id="blueSMax" oninput="updateSlider(5);">
-                    </td>
-                </tr>
-                <tr>
-                    <td>V max</td>
-                    <td>
-                        <input type="range" class="slider sliderV" min="0" max="255" step="5" id="redVMax" oninput="updateSlider(6);">
-                    </td>
-                    <td>V max</td>
-                    <td>
-                        <input type="range" class="slider sliderV" min="0" max="255" step="5" id="greenVMax" oninput="updateSlider(7);">
-                    </td>
-                    <td>V max</td>
-                    <td>
-                        <input type="range" class="slider sliderV" min="0" max="255" step="5" id="blueVMax" oninput="updateSlider(8);">
-                    </td>
-                </tr>
-                <tr>
-                    <td>H min</td>
-                    <td>
-                        <input type="range" class="slider sliderH" min="0" max="180" step="2" id="redHMin" oninput="updateSlider(9);">
-                    </td>
-                    <td>H min</td>
-                    <td>
-                        <input type="range" class="slider sliderH" min="0" max="180" step="2" id="greenHMin" oninput="updateSlider(10);">
-                    </td>
-                    <td>H min</td>
-                    <td>
-                        <input type="range" class="slider sliderH" min="0" max="180" step="2" id="blueHMin" oninput="updateSlider(11);">
-                    </td>
-                </tr>
-                <tr>
-                    <td>S min</td>
-                    <td>
-                        <input type="range" class="slider sliderS" min="0" max="255" step="5" id="redSMin" oninput="updateSlider(12);">
-                    </td>
-                    <td>S min</td>
-                    <td>
-                        <input type="range" class="slider sliderS" min="0" max="255" step="5" id="greenSMin" oninput="updateSlider(13);">
-                    </td>
-                    <td>S min</td>
-                    <td>
-                        <input type="range" class="slider sliderS" min="0" max="255" step="5" id="blueSMin" oninput="updateSlider(14);">
-                    </td>
-                </tr>
-                <tr>
-                    <td>V min</td>
-                    <td>
-                        <input type="range" class="slider sliderV" min="0" max="255" step="5" id="redVMin" oninput="updateSlider(15);">
-                    </td>
-                    <td>V min</td>
-                    <td>
-                        <input type="range" class="slider sliderV" min="0" max="255" step="5" id="greenVMin" oninput="updateSlider(16);">
-                    </td>
-                    <td>V min</td>
-                    <td>
-                        <input type="range" class="slider sliderV" min="0" max="255" step="5" id="blueVMin" oninput="updateSlider(17);">
-                    </td>
-                </tr>
-                <tr>
-                    <td>Max:</td>
-                    <td>
-                        <span>HSV: </span>
-                        <span id="redHMaxindicator">0</span>
-                        <span id="redSMaxindicator">0</span>
-                        <span id="redVMaxindicator">0</span>
-                    </td>
-                    <td>Max:</td>
-                    <td>
-                        <span>HSV: </span>
-                        <span id="greenHMaxindicator">0</span>
-                        <span id="greenSMaxindicator">0</span>
-                        <span id="greenVMaxindicator">0</span>
-                    </td>
-                    <td>Max:</td>
-                    <td>
-                        <span>HSV: </span>
-                        <span id="blueHMaxindicator">0</span>
-                        <span id="blueSMaxindicator">0</span>
-                        <span id="blueVMaxindicator">0</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Min:</td>
-                    <td>
-                        <span>HSV: </span>
-                        <span id="redHMinindicator">0</span>
-                        <span id="redSMinindicator">0</span>
-                        <span id="redVMinindicator">0</span>
-                    </td>
-                    <td>Min:</td>
-                    <td>
-                        <span>HSV: </span>
-                        <span id="greenHMinindicator">0</span>
-                        <span id="greenSMinindicator">0</span>
-                        <span id="greenVMinindicator">0</span>
-                    </td>
-                    <td>Min:</td>
-                    <td>
-                        <span>HSV: </span>
-                        <span id="blueHMinindicator">0</span>
-                        <span id="blueSMinindicator">0</span>
-                        <span id="blueVMinindicator">0</span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <div id="captureDisplay">
-        <button id="displayBack" onclick="displayBack();">&#60</button>
-        <button id="displayForwards" onclick="displayFront();">&#62</button>
-        <input type="range" id="historySlider" class="slider" oninput="displayChange();" min="1" max="1" step="1">
-        <div id="displayBlock">
-            <img id="displayImg">
-            <canvas id="canvas"></canvas>
-            <canvas id="canvas2"></canvas>
+    <div id="leftPane">
+       
+        <div id="logButtonsCollapsible">
+            <div id="slideoutContainer">
+                <input type="checkbox" id="slideoutTabCheckbox"> <!-- dumb CS​S thing -->
+                <div id="slideout">
+                    <div id="slideoutBody">
+                        <!-- non scrollable top with scrollable bottom -->
+                        <div id="controlsHeader">
+                            <div id="statusContainer">
+                                <div id="statusConnected"></div>
+                                <div id="statusRunning"></div>
+                                <div id="statusError"></div>
+                            </div>
+                            <div id="runButtonContainer">
+                                <button id="runManual" class="largeButton" title="Run manual control mode">MANUAL</button>
+                                <button id="runAuto" class="largeButton" title="Run autodrive mode">AUTO</button>
+                                <button id="runStop" class="largeButton" title="Stop the running program">STOP</button>
+                            </div>
+                        </div>
+                        <div id="controls">
+                            <div id="streamButtonContainer">
+                                <button id="stream" class="largeButton" title="Stream images from cameras">START STREAM</button>
+                                <input type="checkbox" id="streamToggle">
+                                <div class="generateToggle" toggleID="streamModSave" toggleLabel="S:" title="Save stream to file"></div>
+                                <div class="generateToggle" toggleID="streamModFilter" toggleLabel="F:" title="Filter stream before sending"></div>
+                            </div>
+                            <div id="captureButtonContainer">
+                                <button id="capture" class="largeButton" title="Capture an image from cameras">CAPTURE</button>
+                                <div class="generateToggle" toggleID="captureModSave" toggleLabel="S:" title="Save captures to file"></div>
+                                <div class="generateToggle" toggleID="captureModFilter" toggleLabel="F:" title="Filter captures before sending"></div>
+                            </div>
+                            <div id="predictButtonContainer">
+                                <button id="predict" class="largeButton" title="Toggle algorithm-processed stream">START PREDICTIONS</button>
+                                <input type="checkbox" id="predictToggle">
+                                <button id="resetPredictor" class="largeButton" title="Reset the algorithm's history">RESET</button>
+                            </div>
+                            <div class="divider"></div>
+                            <div id="mapControls">
+                                <div class="generateToggle" toggleID="hcDrawOverlays" toggleLabel="Overlays:" title="Show overlays on images"></div>
+                                <div class="generateToggle" toggleID="hcDrawRaw" toggleLabel="Raw Landmarks:" title="Show unsnapped landmarks/all landmarks in simple controller"></div>
+                                <div class="generateToggle" toggleID="hcDrawDistances" toggleLabel="Walls & Distances:" title="Show unsnapped walls and distances"></div>
+                                <div class="generateToggle" toggleID="hcDrawWaypoints" toggleLabel="Waypoints:" title="Show waypoints"></div>
+                                <div class="generateToggle" toggleID="hcDrawCoordinates" toggleLabel="Coordinates:" title="Show coordinates of items on the map"></div>
+                                <div class="generateToggle" toggleID="hcRawDump" toggleLabel="Raw Dump:" title="Show additional data in a table"></div>
+                            </div>
+                            <div class="divider"></div>
+                            <div id="sessionFileControls">
+                                <button id="downloadFrame" class="largeButton" title="Download current images"></button>
+                                <button id="importSession" class="largeButton" title="Import a past session"></button>
+                                <button id="exportSession" class="largeButton" title="Export current session"></button>
+                            </div>
+                        </div>
+                    </div>
+                    <label id="slideoutTab" for="slideoutTabCheckbox"></label>
+                </div>
+            </div>
+            <div id="log"></div>
         </div>
-        <div id="fps">FPS: 0</div>
-        <table id="valueDisplayBlock" width="100%" style="font-size: 14px;">
-            <tbody>
-                <tr>
-                    <td style="min-width: 140px;"></td>
-                    <td style="min-width: 140px;"></td>
-                    <td style="min-width: 150px;"></td>
-                    <td style="min-width: 150px;"></td>
-                </tr>
-                <tr>
-                    <td><span id="pillarStrPredict">Pillar Steering: 0</span></td>
-                    <td><button id="displayFullscreen" class="largeButton" onclick="document.getElementById('displayBlock').requestFullscreen();">FULLSCREEN</button></td>
-                    <td>
-                        <label id="showOverlay">
-                            <input type="checkbox" oninput="if (this.checked) {document.getElementById('canvas2').style.display = '';} else {document.getElementById('canvas2').style.display = 'none';}" checked>
-                            Show Overlay
-                        </label>
-                    </td>
-                    <td><input type="button" id="download2" class="largeButton" onclick="downloadSession();" value="DOWNLOAD SESSION"></td>
-                </tr>
-                <tr>
-                    <td><span id="wallStrPredict">Wall Steering: 0</span></td>
-                    <td>Steering Reason: </td>
-                    <td><input type="button" id="download" class="largeButton" onclick="downloadFrame();" value="DOWNLOAD FRAME"></td>
-                    <td><input type="button" id="download3" class="largeButton" onclick="importSession();" value="IMPORT SESSION"></td>
-                </tr>
-                <tr>
-                    <td><span id="strPredict">Final Steering: 0</span></td>
-                    <td><span id="strReason"></span></td>
-                    <td>
-                        <label id="maxHistoryLabel" for="maxHistory">Max History:&nbsp;</label>
-                        <input type="number" id="maxHistory" min="0" max="1000000" step="10" value="1000" oninput="maxHistory = parseInt(this.value);">
-                    </td>
-                    <td></td>
-                </tr>
-            </tbody>
-        </table>
-        <table id="valueDisplay2Block">
-            <tbody>
-                <tr>
-                    <td style="min-width: 80px;"></td>
-                    <td style="min-width: 40px; max-width: 40px;"></td>
-                    <td style="min-width: 40px; max-width: 40px;"></td>
-                </tr>
-                <tr>
-                    <td>Passed Pillar:</td>
-                    <td><span id="passedPillar">0</span></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Just Turned:</td>
-                    <td><span id="justTurned">false</span></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Turn Cooldown:</td>
-                    <td><span id="turnCooldown">0</span></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Turns Made:</td>
-                    <td><span id="turnsMade">0</span></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td><span id="wallHeightLeft">L: 0</span></td>
-                    <td><span id="wallHeightCenter">C: 0</span></td>
-                    <td><span id="wallHeightRight">R: 0</span></td>
-                </tr>
-                <tr>
-                    <td colspan="3">
-                        <button id="emergencyStop">STOP</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="3">
-                        <button id="disconnect">DISCONNECT</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div id="display">
+            <div id="display0">
+                <img id="display0Img">
+                <canvas id="display0Overlay"></canvas>
+            </div>
+            <div id="display1">
+                <img id="display1Img">
+                <canvas id="display1Overlay"></canvas>
+            </div>
+            <div id="fps">FPS: 0</div>
+        </div>
+        <div id="historyControlsWrapper">
+            <div id="historyControls">
+                <div id="historyControlsBody">
+                    <button id="historyPrevious" title="Previous frame">&#60;</button>
+                    <input type="range" id="historySlider" class="slider" min="1" max="1" step="1">
+                    <button id="historyNext" title="Next frame">&#62;</button>
+                </div>
+            </div>
+        </div>
     </div>
-    <div id="joystick">
-        <div id="joystickPin"></div>
-        <div id="sliderX"></div>
-        <div id="sliderY"></div>
+    <div id="rightPane">
+        <canvas id="map"></canvas>
+        <div id="rawDumpContainer">
+            <div id="rawDumpTitle">Raw</div>
+            <div id="rawDumpContents"></div>
+        </div>
+        <input type="checkbox" id="dropdownTabCheckbox"> <!-- wow it's teh dumb CS​S thing again -->
+        <div id="dropdown">
+            <div id="filterAdjust">
+                <div id="filterAdjustLabels">
+                    <span>Red HSV</span>
+                    <span style="transform: translateX(8px)">Green HSV</span>
+                </div>
+                <div id="filterAdjustSliders"></div>
+                <div id="filterAdjustIndicators"></div>
+                <button id="filterApply" class="largeButton" title="Send filter values to algorithm">APPLY</button>
+            </div>
+            <label id="dropdownTab" for="dropdownTabCheckbox"></label>
+        </div>
     </div>
     <canvas id="logocanvas"></canvas>
-    <script src="./../logoIntro.js"></script>
+    <button id="disconnect"></button>
 </body>
 </html>
