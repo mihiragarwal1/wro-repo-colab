@@ -21,6 +21,8 @@
     * [Code Documentation](#code-documentation)
 * [Team Photos!!](#team-photos)
 * [Demonstrations](#demonstration-video)
+* [LiPo Battery Safety Notice](#lipo-battery-safety-notice)
+
 
 
 ***
@@ -108,3 +110,22 @@ Example:
 See [DOCS.md](./DOCS.md).
 
 ***
+
+
+# LiPo Battery Safety Notice
+
+While LiPo batteries are the safest form of portable, affordable, high density energy storage, there are still precautions to be taken when working with them. Lithium is a highly volatile element, and will react with the water vapor in the air if exposed to it.
+
+1. **Do not** puncture, deform, short, or heat LiPo batteries above 26° C (80° F)
+2. Store and charge LiPos in a *fireproof container* **away** from flammable materials and water
+3. **NEVER** charge a swollen or damaged battery (e.g. damaged leads, swelling of cells, puncture in wrapping)
+4. **NEVER** leave a charging battery unattended
+5. Only charge LiPo batteries with chargers *designed for LiPo batteries*
+6. Dropping a battery can cause sufficient damage to rupture a cell and cause shorts
+7. Overdischarging a LiPo battery can cause **permanent damage**
+
+If a LiPo battery goes below its minimum voltage (stated in the manual included or 3.3v multiplied by the amount of cells connected in series) it can cause **permanent internal damage**. This damage is not visible until after further use, when it can swell, or potentially burst and **cause a FIRE**.
+
+**Read all safety notes and instructions included with LiPo batteries before use.**
+
+### For a more detailed LiPo safety manual there is one on [HobbyKing]([https://power.tenergy.com/lipo-safety-warnings/](https://hobbyking.com/en_us/blog/lipo-battery-safety-101-a-guide)https://hobbyking.com/en_us/blog/lipo-battery-safety-101-a-guide)
