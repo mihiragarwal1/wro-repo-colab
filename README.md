@@ -128,4 +128,4 @@ If a LiPo battery goes below its minimum voltage (stated in the manual included 
 
 **Read all safety notes and instructions included with LiPo batteries before use.**
 
-### For a more detailed LiPo safety manual there is one on [HobbyKing](https://hobbyking.com/en_us/blog/lipo-battery-safety-101-a-guide)
+### For a more detailed LiPo safety manual there is one on [HobbyWing](https://hobbyking.com/en_us/blog/lipo-battery-safety-101-a-guide)
