@@ -95,6 +95,14 @@ Example:
 
 ***
 
+
+# Team Photos
+
+![Team Photo](./Team%20Photos/Team%20Image.jpg)
+![Funny](./Team%20Photos/Funny%20Image.jpg)
+
+***
+
 ## Code Documentation
 
 See [DOCS.md](./DOCS.md).
