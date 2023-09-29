@@ -84,11 +84,9 @@ Follow the quick start guide for the ESC to solder the motor connections. Brief 
 
 ### Board Setup, SSHFS, & Static IP
 
-Visit [Yahboom](http://www.yahboom.net/)'s [setup and tutorial repository](http://www.yahboom.net/study/jetson-nano) to begin setting up the [Jetson Nano 4GB](https://category.yahboom.net/collections/jetson/products/jetson-nano-sub). Follow steps 1.1-1.7 in "Development setup > SUB Version".
+Visit [Nvidia](https://developer.nvidia.com/embedded/learn/get-started-jetson-nano-devkit)'s setup and tutorial page to begin setting up the Jetson Nano 4GB. 
 
--> http://www.yahboom.net/study/jetson-nano
-
-After setting up the board, follow step 2.1 in section "Basic Settings" to log into your Jetson Nano. Keep PuTTY open, as it will be used for the rest of the setup process. Also keep the IP. For remote file transfer, install sshfs (linux only), or use [sshfs-win](https://github.com/winfsp/sshfs-win) from WinFsp. Follow instructions to mount the Jetson Nano to a network drive. Now upload all contents of the `/Program/` folder into a new folder on the Jetson Nano. Remember the directory of the folder, this will be used later.
+After setting up the board, log into your Jetson Nano. Keep PuTTY open, as it will be used for the rest of the setup process. Also keep the IP. For remote file transfer, install sshfs (linux only), or use [sshfs-win](https://github.com/winfsp/sshfs-win) from WinFsp. Follow instructions to mount the Jetson Nano to a network drive. Now upload all contents of the `/Program/` folder into a new folder on the Jetson Nano. Remember the directory of the folder, this will be used later.
 
 *This method should be used to upload programs.*
 
