@@ -74,7 +74,7 @@ To calculate $new f$, we need to know the base focal length. For our undistorted
 
 <div align=center>
 
-![focal length](/Extra%20Images/distance-calc-exp.png)
+![focal length](./Extra%20Images/distance-calc-exp.png)
 
 </div>
 
