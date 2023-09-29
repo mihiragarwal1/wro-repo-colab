@@ -1,6 +1,6 @@
 <div align=center>
 
-![banner](./Extra%20Images/banner.png)
+![banner](./Extra%20Images/Banner.png)
 
 </div>
 
