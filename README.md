@@ -107,7 +107,7 @@ Example:
 
 ## Code Documentation
 
-See [DOCS.md](./DOCS.md).
+See [CodeDocumentation.md](./CodeDocumentation.md).
 
 ***
 
