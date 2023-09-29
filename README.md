@@ -1,6 +1,6 @@
 <div align=center>
 
-![banner](./img/banner.png)
+![banner](./Extra%20Images/banner.png)
 
 </div>
 
@@ -42,14 +42,14 @@ Shortened assembly instructions:
 
 Here is a simple schematic for how the electronics are wired:
 
-![Wiring schematic](./img/docs/wiring-schematic.png)
+![Wiring schematic](./Schematics/Schematic.png)
 
 ## Photos
 |                                |                                  |
 | ------------------------------ | -------------------------------- |
-| ![front](./img/docs/front.jpg) | ![back](./img/docs/back.jpg)     |
-| ![left](./img/docs/left.jpg)   | ![right](./img/docs/right.jpg)   |
-| ![top](./img/docs/top.jpg)     | ![bottom](./img/docs/bottom.jpg) |
+| ![front](./Vehicle%20Photos/front.jpg) | ![back](./Vehicle%20Photos/back.jpg)     |
+| ![left](./Vehicle%20Photos/left.jpg)   | ![right](./Vehicle%20Photos/right.jpg)   |
+| ![top](./Vehicle%20Photos/top.jpg)     | ![bottom](./Vehicle%20Photos/bottom.jpg) |
 
 ***
 
